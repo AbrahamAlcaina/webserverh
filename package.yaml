@@ -24,6 +24,8 @@ dependencies:
 
 library:
   source-dirs: src
+  dependencies:
+  - eventful-core  
 
 executables:
   webserverh-exe:

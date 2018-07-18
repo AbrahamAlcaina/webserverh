@@ -2,22 +2,16 @@
 
 module Main where
 
-import Data.Monoid ((<>))
+import Users      (usersRoute)
 import Web.Scotty
 
 app :: ScottyM ()
 app = do
   helloWorld
-  helloYou
+  usersRoute
 
 helloWorld :: ScottyM ()
-helloWorld = get "/" $ text "Hello Worl!"
-
-helloYou :: ScottyM ()
-helloYou =
-  get "/:name" $ do
-    name <- param "name"
-    text $ "Hello " <> name <> "!"
+helloWorld = get "/" $ text "Hello World!"
 
 main :: IO ()
 main = do

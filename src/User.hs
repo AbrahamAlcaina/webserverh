@@ -1,11 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module User (
-  User(..)
-  , UserEvent(..)
-  , UserCommand(..)
-  , userProjection
-  , userAggregate) where
+module User where
 
 import Eventful
 
@@ -26,10 +21,13 @@ createUser uuid name = User{uuid, name}
 renameUser :: User -> String -> User
 renameUser User{uuid} name = User{uuid, name}
 
+initUser :: User
+initUser = User {uuid = nil, name = "" }
+
 userProjection :: Projection User UserEvent
 userProjection = Projection
   {
-    projectionSeed  = User {uuid=nil, name=""}
+    projectionSeed = initUser
     ,projectionEventHandler = handleEvent
   }
 
@@ -40,7 +38,7 @@ data UserCommand = CreateUser UUID String
 data UserError = UserAlreadyCreated
 
 applyCommand::User -> UserCommand -> Either UserError [UserEvent]
-applyCommand User{uuid} (CreateUser newId name) = if nil==uuid then Right [UserCreated newId name] else Left UserAlreadyCreated
+applyCommand _ (CreateUser newId name) = if nil==newId then  Left UserAlreadyCreated else Right [UserCreated newId name]
 applyCommand _ (RenameUser name) = Right [UserRenamed name]
 
 adaptApplyCommand = either (const []) id `compose` applyCommand

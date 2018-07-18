@@ -49,3 +49,7 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - webserverh
+    - eventful-core
+    - QuickCheck
+    - hspec-discover
+    - hspec

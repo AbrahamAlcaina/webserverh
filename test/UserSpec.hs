@@ -1,6 +1,7 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module UserSpec (spec) where
 
+import Debug.Trace
 import Test.Hspec
 import Test.QuickCheck as Q
 
@@ -15,11 +16,15 @@ spec =
 
 initUserUUID = uuid initUser
 
--- TODO generate random id/name
+nonEmptyString :: Gen String
+nonEmptyString = listOf1 arbitrary
+
 instance Arbitrary UserCommand where
-  arbitrary = oneof
-    [ return (CreateUser (uuidFromInteger 1) "Pepe")
-    , return (RenameUser "Pepa")]
+  arbitrary = do
+    baseId <- choose (1,100000)
+    name <- nonEmptyString
+    oneof [ return (CreateUser (uuidFromInteger baseId) name)
+          , return (RenameUser name)]
 
 prop_shouldAppyCommandAndHandle :: UserCommand -> Bool
 prop_shouldAppyCommandAndHandle c@(CreateUser uuid name) =

@@ -5,14 +5,14 @@ import Debug.Trace
 import Test.Hspec
 import Test.QuickCheck as Q
 
-import Eventful (nil, uuidFromInteger)
-import User
+import Eventful       (nil, uuidFromInteger)
+import User.Aggregate
 
 spec :: Spec
 spec =
-  describe "User" $
-    it "property base test" $
-      property prop_shouldAppyCommandAndHandle
+  describe "property test" $
+      it "should handle commands and events" $
+      property prop_shouldAppyCommandAndHandle --verboseCheck
 
 initUserUUID = uuid initUser
 
@@ -37,5 +37,4 @@ prop_shouldAppyCommandAndHandle c@(RenameUser name) =
     Right [UserRenamed name ] ->
       handleEvent initUser (UserRenamed name) == User{uuid=initUserUUID, name}
     _ -> False
-prop_shouldAppyCommandAndHandle _ = False
 

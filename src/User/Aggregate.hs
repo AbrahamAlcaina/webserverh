@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module User where
+module User.Aggregate where
 
 import Eventful
 

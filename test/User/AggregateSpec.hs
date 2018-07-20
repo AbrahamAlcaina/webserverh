@@ -1,12 +1,12 @@
 {-# LANGUAGE NamedFieldPuns #-}
-module UserSpec (spec) where
+module User.AggregateSpec (spec) where
 
 import Debug.Trace
 import Test.Hspec
 import Test.QuickCheck as Q
 
-import Eventful       (nil, uuidFromInteger)
-import User.Aggregate
+import Eventful   (nil, uuidFromInteger)
+import User.Model
 
 spec :: Spec
 spec =
@@ -30,11 +30,11 @@ prop_shouldAppyCommandAndHandle :: UserCommand -> Bool
 prop_shouldAppyCommandAndHandle c@(CreateUser uuid name) =
   case applyCommand initUser c of
     Right [UserCreated uuid name ] ->
-      handleEvent initUser (UserCreated uuid name) == User{uuid, name}
+      handleEvent initUser (UserCreated uuid name) == UserState{uuid, name}
     _ -> False
 prop_shouldAppyCommandAndHandle c@(RenameUser name) =
   case applyCommand initUser c of
     Right [UserRenamed name ] ->
-      handleEvent initUser (UserRenamed name) == User{uuid=initUserUUID, name}
+      handleEvent initUser (UserRenamed name) == UserState{uuid=initUserUUID, name}
     _ -> False
 

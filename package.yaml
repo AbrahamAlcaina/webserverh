@@ -21,11 +21,20 @@ description:         Please see the README on GitHub at <https://github.com/Abra
 
 dependencies:
 - base >= 4.7 && < 5
+- eventful-core
+- eventful-sqlite
+- eventful-memory
+- safe
+- stm
+
+- persistent
+- persistent-sqlite
 
 library:
   source-dirs: src
   dependencies:
-  - eventful-core  
+  - eventful-core
+  - eventful-memory
 
 executables:
   webserverh-exe:

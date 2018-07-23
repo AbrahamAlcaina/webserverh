@@ -44,9 +44,7 @@ extra-deps:
   commit: 3f0c604e5bb2dcf5bacf0a2e01edf6a5e9c5e22e
   subdirs:
     - eventful-core
-    - eventful-dynamodb
     - eventful-memory
-    - eventful-postgresql
     - eventful-sql-common
     - eventful-sqlite
 

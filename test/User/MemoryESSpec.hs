@@ -1,8 +1,8 @@
-module User.ESSpec(spec) where
+module User.MemoryESSpec(spec) where
 
 import Eventful
 import Test.Hspec
-import User.ES
+import User.MemoryES
 import User.Model
 
 s = Store {

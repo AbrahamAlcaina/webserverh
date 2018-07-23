@@ -26,15 +26,24 @@ dependencies:
 - eventful-memory
 - safe
 - stm
+- mtl
+- monad-logger
+- aeson
+- aeson-casing
+- aeson-pretty
+- text
+- bytestring
 
 - persistent
 - persistent-sqlite
+- persistent-template
 
 library:
   source-dirs: src
   dependencies:
   - eventful-core
   - eventful-memory
+  - eventful-sqlite
 
 executables:
   webserverh-exe:

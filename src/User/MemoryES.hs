@@ -1,15 +1,12 @@
-module User.ES where
+module User.MemoryES where
 
 import User.Model
 
 import Control.Monad
 import Control.Monad.STM
-
 import Eventful
 import Eventful.Store.Memory
 
--- | An Action is a side-effect that runs on a particular stream's state and
--- | reports what it did as events
 type Action e = UUID -> UserState -> IO [e]
 
 data Store = Store
@@ -40,4 +37,4 @@ newInMemoryStore = do
   newStoreFrom
     (\uuid -> void . atomically . storeEvents w uuid AnyPosition)
     (\uuid -> atomically $ getLatestStreamProjection r $
-      versionedStreamProjection uuid initialUserProjection)
+      versionedStreamProjection uuid userProjection)

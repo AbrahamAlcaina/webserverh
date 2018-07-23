@@ -1,9 +1,10 @@
 {-# LANGUAGE NamedFieldPuns #-}
-module User.AggregateSpec (spec) where
+module User.ModelSpec (spec) where
 
 import Debug.Trace
 import Test.Hspec
-import Test.QuickCheck as Q
+import Test.Hspec.QuickCheck
+import Test.QuickCheck
 
 import Eventful   (nil, uuidFromInteger)
 import User.Model
@@ -12,7 +13,7 @@ spec :: Spec
 spec =
   describe "property test" $
       it "should handle commands and events" $
-      property prop_shouldAppyCommandAndHandle --verboseCheck
+      property prop_shouldAppyCommandAndHandle -- verboseCheck $
 
 initUserUUID = uuid initUser
 

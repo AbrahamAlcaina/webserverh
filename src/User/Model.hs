@@ -1,15 +1,17 @@
+{-# LANGUAGE DeriveGeneric  #-}
 {-# LANGUAGE NamedFieldPuns #-}
 
 module User.Model where
 
 import Eventful
+import GHC.Generics
 
 data UserState = UserState { uuid::UUID, name::String }
-  deriving (Show, Eq)
+  deriving (Show, Eq, Generic)
 
 data UserEvent = UserCreated UUID String
   | UserRenamed String
-  deriving (Eq, Show, Read)
+  deriving (Eq, Show, Generic)
 
 handleEvent :: UserState -> UserEvent -> UserState
 handleEvent _ (UserCreated uid name) = createUser uid name
@@ -24,16 +26,12 @@ renameUser UserState{uuid} name = UserState{uuid, name}
 initUser :: UserState
 initUser = UserState {uuid = nil, name = "" }
 
-initialUserProjection :: Projection UserState UserEvent
-initialUserProjection = Projection
-  {
-    projectionSeed = initUser
-    ,projectionEventHandler = handleEvent
-  }
+userProjection :: Projection UserState UserEvent
+userProjection = Projection initUser handleEvent
 
 data UserCommand = CreateUser UUID String
   | RenameUser String
-  deriving (Eq, Show, Read)
+  deriving (Eq, Show, Generic)
 
 data UserError = UserAlreadyCreated
 
@@ -46,4 +44,4 @@ adaptApplyCommand = either (const []) id `compose` applyCommand
   where compose = (.).(.)
 
 userCommandHandler :: CommandHandler UserState UserEvent UserCommand
-userCommandHandler = CommandHandler adaptApplyCommand initialUserProjection
+userCommandHandler = CommandHandler adaptApplyCommand userProjection

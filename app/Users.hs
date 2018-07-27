@@ -1,31 +1,33 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Users where
+module Users (usersRoute) where
 
-import Control.Monad
-import Control.Monad.IO.Class
-import Data.Monoid             ((<>))
-import Database.Persist.Sqlite
-import Eventful.Store.Sqlite
-import User.Service            as Service
-import Web.Scotty              as Scotty
+import Control.Monad.Reader
+import Data.Text.Lazy       (Text)
+import Web.Scotty.Trans
 
-updateUserName pool = Scotty.put "/users/:uuid/changeName/:name" $ do
+import App          (AppM)
+import User.Service
+
+-- Here use a lift becouse the callback of put/get is an ActionT from Scotty
+updateUserName = put "/users/:uuid/changeName/:name" $ do
+    name <- param "name"
+    uuid <- param "uuid"
+    userState <- lift $ runCommand $ RenameUserServiceCommand uuid name
+    json userState
+
+createUser = put "/users/:name" $ do
   name <- param "name"
-  uuid <- param "uuid"
-  userState <- liftIO $ Service.runCommand pool $ RenameUserServiceCommand uuid name
-  json userState
-createUser pool = Scotty.put "/users/:name" $ do
-  name <- param "name"
-  userState <- liftIO $ Service.runCommand pool $ CreateUserServiceCommand name
-  json userState
-getUser pool = Scotty.get "/users/:uuid" $ do
-  uuid <- param "uuid"
-  userState <- liftIO $ Service.runCommand pool $ GetUser uuid
+  userState <- lift $ runCommand $ CreateUserServiceCommand name
   json userState
 
-usersRoute :: ConnectionPool -> ScottyM ()
-usersRoute pool  = do
-  updateUserName pool
-  createUser pool
-  getUser pool
+getUser = get "/users/:uuid" $ do
+  uuid <- param "uuid"
+  userState <- lift $ runCommand $ GetUser uuid
+  json userState
+
+usersRoute ::  ScottyT Text AppM ()
+usersRoute  = do
+  updateUserName
+  createUser
+  getUser

@@ -1,12 +1,12 @@
-module User.Service where
+module User.Service (runCommand, ServiceCommand(..)) where
+import           App                  (HasAppConfig, appDbPool)
 import           Control.Monad
-import qualified Data.Text               as T
-import           Database.Persist.Sqlite
+import           Control.Monad.Reader
+import qualified Data.Text            as T
+import           DB                   (runDB)
 import           Eventful
-
-import User.Model
-import User.Store
-
+import           User.Model
+import           User.Store
 
 data ServiceCommand
     = CreateUserServiceCommand String
@@ -14,25 +14,27 @@ data ServiceCommand
     | GetUser String
     deriving (Show)
 
-runCommand :: ConnectionPool ->ServiceCommand -> IO UserState
-runCommand pool (CreateUserServiceCommand name) = do
-    uuid <- uuidNextRandom
+runCommand :: (MonadIO m, MonadReader r m, HasAppConfig r ) => ServiceCommand -> m UserState
+runCommand (CreateUserServiceCommand name) = do
+    uuid <- liftIO uuidNextRandom
     let command = CreateUser uuid name
-    runDB pool $ applyCommandHandler userEventStoreWriter userEventStoreReader userCommandHandler uuid command
-    getUserState pool $ show uuid
-runCommand pool (RenameUserServiceCommand uid name) = do
+    runDB $ applyCommandHandler userEventStoreWriter userEventStoreReader userCommandHandler uuid command
+    getUserState $ show uuid
+runCommand (RenameUserServiceCommand uid name) = do
     let uuid = getId uid
         command = RenameUser name
-    runDB pool $ applyCommandHandler userEventStoreWriter userEventStoreReader userCommandHandler uuid command
-    getUserState pool uid
-runCommand pool (GetUser uid) = getUserState pool uid
+    runDB $ applyCommandHandler userEventStoreWriter userEventStoreReader userCommandHandler uuid command
+    getUserState uid
+runCommand (GetUser uid) = getUserState uid
 
-getUserState pool uid = do
-  let uuid = getId uid
-  latestStreamProjection <- runDB pool $
-    getLatestStreamProjection userEventStoreReader (versionedStreamProjection uuid userProjection)
-  return $ streamProjectionState latestStreamProjection
+getUserState uid = do
+    let uuid = getId uid
+    latestStreamProjection <- runDB $
+        getLatestStreamProjection userEventStoreReader (versionedStreamProjection uuid userProjection)
+    return $ streamProjectionState latestStreamProjection
 
 getId uid = case uuidFromText $ T.pack uid of
-  (Just uuid) -> uuid
-  Nothing -> nil
+    (Just uuid) -> uuid
+    Nothing -> nil
+
+

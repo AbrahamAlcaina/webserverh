@@ -2,10 +2,11 @@ module User.Store where
 
 import Control.Monad.Reader
 import Data.Aeson
-import Database.Persist.Sql
+import Database.Persist.Sql  (SqlPersistT)
 import Eventful
 import Eventful.Store.Sqlite
 
+import App        (HasAppConfig, appDbPool)
 import User.Model
 
 instance ToJSON UserEvent
@@ -13,9 +14,6 @@ instance FromJSON UserEvent
 
 instance ToJSON UserState
 instance FromJSON UserState
-
-runDB :: ConnectionPool -> SqlPersistT IO a -> IO a
-runDB = flip runSqlPool
 
 userEventStoreReader :: (MonadIO m) => VersionedEventStoreReader (SqlPersistT m) UserEvent
 userEventStoreReader = serializedVersionedEventStoreReader jsonStringSerializer $ sqlEventStoreReader defaultSqlEventStoreConfig

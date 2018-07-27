@@ -33,10 +33,10 @@ dependencies:
 - aeson-pretty
 - text
 - bytestring
-
 - persistent
 - persistent-sqlite
 - persistent-template
+- lens
 
 library:
   source-dirs: src

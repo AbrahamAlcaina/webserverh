@@ -3,8 +3,10 @@
 
 module User.Model where
 
+import Control.Monad.Catch (Exception)
 import Eventful
 import GHC.Generics
+import Type.Reflection     (Typeable)
 
 data UserState = UserState { uuid::UUID, name::String }
   deriving (Show, Eq, Generic)
@@ -34,6 +36,10 @@ data UserCommand = CreateUser UUID String
   deriving (Eq, Show, Generic)
 
 data UserError = UserAlreadyCreated
+  | UserNotFound
+  deriving (Eq, Show, Read, Typeable, Generic)
+
+instance Exception UserError
 
 applyCommand :: UserState -> UserCommand -> Either UserError [UserEvent]
 applyCommand _ (CreateUser newId name) = if nil==newId then  Left UserAlreadyCreated else Right [UserCreated newId name]

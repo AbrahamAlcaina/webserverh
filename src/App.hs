@@ -4,6 +4,7 @@ module App where
 
 import Control.Lens.TH
 import Control.Monad
+import Control.Monad.Catch
 import Control.Monad.Except
 import Control.Monad.IO.Class
 import Control.Monad.Reader
@@ -34,7 +35,7 @@ data AppError = DBError
   | AppErr
 
 newtype AppM a = AppM { unApp:: ReaderT AppConfig IO a }
-  deriving (Functor, Applicative, Monad, MonadReader AppConfig, MonadIO)
+  deriving (Functor, Applicative, Monad, MonadReader AppConfig, MonadIO, MonadThrow)
 
 makeClassyPrisms ''AppError
 

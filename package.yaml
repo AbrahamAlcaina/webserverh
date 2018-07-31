@@ -37,6 +37,8 @@ dependencies:
 - persistent-sqlite
 - persistent-template
 - lens
+- exceptions
+- http-types
 
 library:
   source-dirs: src

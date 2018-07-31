@@ -1,3 +1,5 @@
 .stack-work/
 webserverh.cabal
 *~
+data*
+curl-format.txt

@@ -21,9 +21,31 @@ description:         Please see the README on GitHub at <https://github.com/Abra
 
 dependencies:
 - base >= 4.7 && < 5
+- eventful-core
+- eventful-sqlite
+- eventful-memory
+- safe
+- stm
+- mtl
+- monad-logger
+- aeson
+- aeson-casing
+- aeson-pretty
+- text
+- bytestring
+- persistent
+- persistent-sqlite
+- persistent-template
+- lens
+- exceptions
+- http-types
 
 library:
   source-dirs: src
+  dependencies:
+  - eventful-core
+  - eventful-memory
+  - eventful-sqlite
 
 executables:
   webserverh-exe:
@@ -47,3 +69,7 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - webserverh
+    - eventful-core
+    - QuickCheck
+    - hspec-discover
+    - hspec

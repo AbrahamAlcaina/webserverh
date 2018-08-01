@@ -1,5 +1,6 @@
 module User.Service (runCommand, ServiceCommand(..)) where
 import           App                  (HasAppConfig, appDbPool)
+import           AppError
 import           Control.Monad
 import           Control.Monad.Catch
 import           Control.Monad.Reader
@@ -7,6 +8,7 @@ import qualified Data.Text            as T
 import           DB                   (runDB)
 import           Eventful
 import           User.Model
+  (UserCommand(..), UserState, userCommandHandler, userProjection)
 import           User.Store
 
 data ServiceCommand

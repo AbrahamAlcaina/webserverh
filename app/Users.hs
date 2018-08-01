@@ -1,49 +1,31 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DataKinds     #-}
+{-# LANGUAGE PolyKinds     #-}
+{-# LANGUAGE TypeOperators #-}
 
-module Users (usersRoute, userErrorHandler) where
 
+module Users (usersServer, UsersApi) where
+
+import App                  (AppM)
 import Control.Monad.Reader
-import Data.Text.Lazy       (Text)
-import Web.Scotty.Trans
-
-import App                       (AppM)
-import Control.Monad.Catch       (Exception, catch)
-import Data.String               (fromString)
-import Debug.Trace
-import Network.HTTP.Types.Status
-import User.Model                (UserError(..))
+import Servant
+import User.Model           (UserState)
 import User.Service
 
--- Here use a lift becouse the callback of put/get is an ActionT from Scotty
-updateUserName  ::  (ScottyError e, Exception e) => ScottyT e AppM ()
-updateUserName = put "/users/:uuid/changeName/:name" $ do
-    name <- param "name"
-    uuid <- param "uuid"
-    userState <- lift $ runCommand $ RenameUserServiceCommand uuid name
-    json userState
+type UsersApi = "users" :> Capture "uuid" String :> "changeName" :> Capture "name" String :> Put '[JSON] UserState
+        :<|> "users" :> Capture "name" String :> Put '[JSON] UserState
+        :<|> "users" :> Capture "uuid" String :> Get '[JSON] UserState
 
-createUser  ::  (ScottyError e) => ScottyT e AppM ()
-createUser = put "/users/:name" $ do
-  name <- param "name"
-  userState <- lift $ runCommand $ CreateUserServiceCommand name
-  json userState
 
-getUser  ::  (ScottyError e) => ScottyT e AppM ()
-getUser = get "/users/:uuid" $ do
-  uuid <- param "uuid"
-  userState <- lift $ runCommand $ GetUser uuid
-  json userState
+updateUserName :: String -> String -> AppM UserState
+updateUserName uuid name = runCommand $ RenameUserServiceCommand uuid name
 
-usersRoute ::  (ScottyError e, Exception e) => ScottyT e AppM ()
-usersRoute  = do
-  updateUserName
-  createUser
-  getUser
+createUser  ::  String -> AppM UserState
+createUser name = runCommand $ CreateUserServiceCommand name
 
-instance ScottyError UserError where
-  stringError = read
-  showError = fromString . show
+getUser  ::  String -> AppM  UserState
+getUser uuid = runCommand $ GetUser uuid
 
-userErrorHandler :: UserError -> ActionT UserError AppM ()
-userErrorHandler UserNotFound = status notFound404
-userErrorHandler UserAlreadyCreated = status conflict409
+usersServer :: ServerT UsersApi AppM
+usersServer  = updateUserName
+  :<|> createUser
+  :<|> getUser

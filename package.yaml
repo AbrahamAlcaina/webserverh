@@ -24,7 +24,6 @@ dependencies:
 - eventful-core
 - eventful-sqlite
 - eventful-memory
-- safe
 - stm
 - mtl
 - monad-logger
@@ -35,10 +34,11 @@ dependencies:
 - bytestring
 - persistent
 - persistent-sqlite
-- persistent-template
 - lens
 - exceptions
-- http-types
+- servant
+- servant-server
+- errors
 
 library:
   source-dirs: src
@@ -57,7 +57,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - webserverh    
-    - scotty
+    - warp
 
 tests:
   webserverh-test:

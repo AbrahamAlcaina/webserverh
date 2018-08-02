@@ -1,6 +1,3 @@
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TypeFamilies     #-}
-
 module API (Api, apiProxy, server, errorToServantError) where
 
 import Servant

@@ -1,15 +1,14 @@
 module DB where
 
-import Control.Lens
+import Control.Lens            ((^.))
 import Control.Monad.Logger    (NoLoggingT(..), runNoLoggingT)
-import Control.Monad.Reader
+import Control.Monad.Reader    (MonadReader, ask, liftIO)
 import Data.Text               (pack)
-import Database.Persist.Sql
-import Database.Persist.Sqlite
+import Database.Persist.Sqlite (ConnectionPool, runSqlPool, withSqlitePool)
 import Eventful.Store.Sqlite
+  (defaultSqlEventStoreConfig, initializeSqliteEventStore)
 
-import App        (HasAppConfig, appDbPool)
-import User.Model
+import App (HasAppConfig, appDbPool)
 
 getPool :: (MonadReader r m, HasAppConfig r ) => m ConnectionPool
 getPool = do

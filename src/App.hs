@@ -1,18 +1,12 @@
-{-# LANGUAGE GADTs                      #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE TemplateHaskell            #-}
 module App where
 
-import Control.Lens.TH
-import Control.Monad
-import Control.Monad.Catch
-import Control.Monad.Except
-import Control.Monad.IO.Class
-import Control.Monad.Reader
-import Control.Monad.Trans
-import Data.Text               (Text)
-import Database.Persist.Sqlite
-import Servant.Server
+import Control.Lens.TH         (makeClassy)
+import Control.Monad.Catch     (MonadThrow)
+import Control.Monad.IO.Class  (MonadIO)
+import Control.Monad.Reader    (MonadReader, ReaderT, runReaderT)
+import Database.Persist.Sqlite (ConnectionPool)
 
 import AppError (AppError)
 

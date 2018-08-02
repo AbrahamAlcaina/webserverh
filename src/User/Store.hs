@@ -1,9 +1,9 @@
 module User.Store where
 
-import Control.Monad.Reader
-import Data.Aeson
+import Control.Monad.Reader  (MonadIO)
+import Data.Aeson            (FromJSON, ToJSON)
 import Database.Persist.Sql  (SqlPersistT)
-import Eventful
+import Eventful              (synchronousEventBusWrapper)
 import Eventful.Store.Sqlite
 
 import App        (HasAppConfig, appDbPool)

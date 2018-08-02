@@ -5,7 +5,7 @@ module User.Model where
 
 import Control.Monad.Catch (Exception)
 import Eventful
-import GHC.Generics
+import GHC.Generics        (Generic)
 import Type.Reflection     (Typeable)
 
 data UserState = UserState { uuid::UUID, name::String }

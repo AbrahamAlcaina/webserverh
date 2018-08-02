@@ -1,15 +1,16 @@
 module User.Service (runCommand, ServiceCommand(..)) where
-import           App                  (HasAppConfig, appDbPool)
-import           AppError
-import           Control.Monad
-import           Control.Monad.Catch
-import           Control.Monad.Reader
+
+import           Control.Monad.Catch  (MonadThrow, throwM)
+import           Control.Monad.Reader (MonadIO, MonadReader, liftIO)
 import qualified Data.Text            as T
-import           DB                   (runDB)
 import           Eventful
-import           User.Model
+
+import App        (HasAppConfig, appDbPool)
+import AppError
+import DB         (runDB)
+import User.Model
   (UserCommand(..), UserState, userCommandHandler, userProjection)
-import           User.Store
+import User.Store
 
 data ServiceCommand
     = CreateUserServiceCommand String

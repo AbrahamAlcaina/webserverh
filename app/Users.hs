@@ -5,10 +5,9 @@
 
 module Users (usersServer, UsersApi) where
 
-import App                  (AppM)
-import Control.Monad.Reader
+import App          (AppM)
 import Servant
-import User.Model           (UserState)
+import User.Model   (UserState)
 import User.Service
 
 type UsersApi = "users" :> Capture "uuid" String :> "changeName" :> Capture "name" String :> Put '[JSON] UserState

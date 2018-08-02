@@ -11,8 +11,7 @@ s = Store {
 }
 
 commandAction :: UserCommand -> Action UserEvent
-commandAction cmd = \_ s -> do
-    return $ commandHandlerHandler userCommandHandler s cmd
+commandAction cmd _ s = return $ commandHandlerHandler userCommandHandler s cmd
 
 newName = "Pablito"
 

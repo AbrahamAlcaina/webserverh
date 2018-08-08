@@ -5,6 +5,7 @@ import Control.Monad.Logger    (NoLoggingT(..), runNoLoggingT)
 import Control.Monad.Reader    (MonadReader, ask, liftIO)
 import Data.Text               (pack)
 import Database.Persist.Sqlite (ConnectionPool, runSqlPool, withSqlitePool)
+
 import Eventful.Store.Sqlite
   (defaultSqlEventStoreConfig, initializeSqliteEventStore)
 
@@ -17,7 +18,7 @@ getPool = do
 
 setupPool :: String -> Int -> IO ConnectionPool
 setupPool fileDB poolSize =
-    runNoLoggingT $ withSqlitePool (pack fileDB)  poolSize $ \pool -> NoLoggingT $ do
+    runNoLoggingT $ withSqlitePool (pack fileDB) poolSize $ \pool -> do
     initializeSqliteEventStore defaultSqlEventStoreConfig pool
     return pool
 

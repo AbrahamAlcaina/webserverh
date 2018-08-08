@@ -7,6 +7,7 @@ module Main where
 import Control.Lens             ((^.))
 import Data.Maybe               (fromMaybe)
 import Network.Wai.Handler.Warp (run)
+import Servant.Client
 import System.Environment       (lookupEnv)
 
 import App

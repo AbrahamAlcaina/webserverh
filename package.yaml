@@ -45,7 +45,7 @@ library:
   dependencies:
   - eventful-core
   - eventful-memory
-  - eventful-sqlite
+  - eventful-sqlite  
 
 executables:
   webserverh-exe:
@@ -58,6 +58,7 @@ executables:
     dependencies:
     - webserverh    
     - warp
+    - servant-client
 
 tests:
   webserverh-test:
